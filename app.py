@@ -82,8 +82,8 @@ class Artist(db.Model):
 class Show(db.Model):
     __tablename__ ='Show'
     id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, nullable=False)
-    venue_id =  db.Column(db.Integer, nullable=False)
+    artist_id = db.Column(db.ForeignKey ('Venue.id') ,nullable=False)
+    venue_id =  db.Column(db.ForeignKey ('Genre.id') ,nullable=False)
     start_time = db.Column(db.DateTime)
 
 
@@ -290,8 +290,8 @@ def delete_venue(venue_id):
   venue_name=Venue.query.get(venue_id).name
   try:
     db.session.query(venue_genre).filter(venue_genre.c.venue_id==venue_id).delete()
-    Venue.query.filter_by(id=venue_id).delete()
     Show.query.filter_by(venue_id=venue_id).delete()
+    Venue.query.filter_by(id=venue_id).delete()
     db.session.commit()
     flash('Venue ' + venue_name+ ' was successfully deleted!','info')
   except Exception as e :
